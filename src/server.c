@@ -483,9 +483,18 @@ main(int argc, char **argv) {
         return 1;
     }
 
+    struct lws_vhost *vhost = lws_get_vhost_by_name(context, "default");
+    if (vhost == NULL) {
+        lwsl_err("libwebsockets default vhost creation failed\n");
+        return 1;
+    }
+
+    int port = lws_get_vhost_listen_port(vhost);
+    lwsl_notice("  listening on port: %d\n", port);
+
     if (browser) {
         char url[30];
-        sprintf(url, "%s://localhost:%d", ssl ? "https" : "http", info.port);
+        sprintf(url, "%s://localhost:%d", ssl ? "https" : "http", port);
         open_uri(url);
     }
 
